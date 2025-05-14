@@ -1,0 +1,47 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // Formatting using Prettier by default for all languages
+  "editor.formatOnSave": false,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+
+  "tailwindCSS.showPixelEquivalents": true,
+  "tailwindCSS.validate": true,
+  "tailwindCSS.lint.invalidConfigPath": "error",
+  "tailwindCSS.lint.cssConflict": "error",
+  "tailwindCSS.classAttributes": ["className"],
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+
+  "files.eol": "\n",
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/coverage": true,
+    "*.tsbuildinfo": true,
+    "next-env.d.ts": true
+  },
+
+  "cSpell.language": "en",
+  "cSpell.files": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "**/*.md",
+    "**/*.yml",
+    "**/*.yaml"
+  ],
+  "cSpell.ignoreWords": ["clsx", "dequal"],
+  "cSpell.enabledLanguageIds": [
+    "typescript",
+    "typescriptreact",
+    "markdown",
+    "yml"
+  ]
+}

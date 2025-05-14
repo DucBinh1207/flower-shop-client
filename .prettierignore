@@ -1,0 +1,22 @@
+# dependencies
+node_modules
+
+# next.js
+.next
+
+# testing
+coverage
+
+# storybook
+!.storybook
+storybook-static
+
+# manifestation of the manifest
+pnpm-lock.yaml
+
+# openapi
+src/api/openapi/schema.ts
+src/api/openapi/schema.yaml
+
+# msw
+msw-public

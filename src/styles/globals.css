@@ -1,0 +1,86 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@500;600&family=Roboto:wght@300;400;500&display=swap");
+@import url("https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 122 39% 34%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --primary-light: 122 39% 70%;
+    --primary-dark: 122 39% 20%;
+    --secondary: 120 25% 60%;
+    --secondary-foreground: 240 5.9% 10%;
+    --secondary-light: 120 25% 70%;
+    --secondary-dark: 120 25% 40%;
+    --accent: 40 100% 50%;
+    --accent-foreground: 240 5.9% 10%;
+    --accent-light: 40 100% 90%;
+    --accent-dark: 40 100% 40%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142.1 76.2% 36.3%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-[#F5F7F4] text-foreground antialiased;
+  }
+
+  /* h1, h2, h3, h4, h5, h6 {
+    @apply ;
+  } */
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply flex items-center justify-center rounded-full bg-primary px-6 py-3 font-medium text-white transition-colors hover:bg-primary-dark;
+  }
+
+  .btn-secondary {
+    @apply flex items-center justify-center rounded-full border border-primary bg-white px-6 py-3 font-medium text-primary transition-colors hover:bg-gray-100;
+  }
+}
+
+.range-slider__range {
+  background-color: hsl(var(--primary)) !important;
+  transition: height 0.3s;
+}
+
+.range-slider__thumb {
+  background-color: hsl(var(--primary)) !important;
+  transition: transform 0.3s;
+}
+
+.range-slider__thumb[data-active] {
+  transform: translate(-50%, -50%) scale(1.25);
+}
+
+.range-slider__range[data-active] {
+  height: 16px;
+}

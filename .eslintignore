@@ -1,0 +1,18 @@
+# dependencies
+node_modules
+
+# next.js
+.next
+
+# testing
+coverage
+
+# storybook
+!.storybook
+storybook-static
+
+# openapi
+src/api/openapi/schema.ts
+
+# msw
+msw-public

@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "allowJs": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".eslintrc.js",
+    "*.config.ts",
+    "*.config.js",
+    "*.config.mjs",
+    "*.config.mts",
+    ".storybook/*.ts",
+    "vitest-global-setup.ts"
+  ],
+  "exclude": ["node_modules"]
+}
