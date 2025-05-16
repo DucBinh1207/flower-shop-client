@@ -17,7 +17,7 @@ export interface Order {
   customerPhone: string;
   shippingAddress: string;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
-  paymentMethod: "cod" | "bank_transfer" | "credit_card";
+  paymentMethod: "cod" | "bank_transfer" ;
   paymentStatus: "pending" | "paid" | "failed";
   subtotal: number;
   shippingFee: number;
@@ -144,7 +144,7 @@ export const orders: Order[] = [
     customerPhone: "0934567890",
     shippingAddress: "789 Đường Phan Đình Phùng, Quận 3, TP.HCM",
     status: "shipped",
-    paymentMethod: "credit_card",
+    paymentMethod: "bank_transfer",
     paymentStatus: "paid",
     subtotal: 298000,
     shippingFee: 30000,

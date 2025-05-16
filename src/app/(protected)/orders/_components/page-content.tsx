@@ -50,8 +50,6 @@ export default function PageContent() {
         return "Thanh toán khi nhận hàng";
       case "bank_transfer":
         return "Chuyển khoản ngân hàng";
-      case "credit_card":
-        return "Thẻ tín dụng/ghi nợ";
       default:
         return method;
     }

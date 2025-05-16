@@ -190,7 +190,7 @@ export type SortOption =
   | "newest"
   | "rating"
   | "popularity";
-export type PaymentMethod = "cod" | "bank_transfer" | "credit_card";
+export type PaymentMethod = "cod" | "bank_transfer" ;
 export type ProductFilter = "all" | "new" | "bestseller" | "sale";
 export type StatusSupplier = "active" | "inactive" | "pending";
 
