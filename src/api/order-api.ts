@@ -1,4 +1,4 @@
-import { Order } from "../types";
+import { Order, ResponsePayment } from "../types";
 import PublicHttpClient from "./public-http-client";
 import { DataResponseWithPagination } from "./type";
 
@@ -13,11 +13,11 @@ export async function getOrders() {
 }
 
 export async function order(data: Order) {
-  const response = await httpClient.post({
+  const response = await httpClient.post<ResponsePayment>({
     data,
   });
 
-  return response;
+  return response.data;
 }
 
 export async function getMyOrder() {

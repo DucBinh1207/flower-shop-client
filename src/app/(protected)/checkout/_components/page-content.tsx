@@ -7,11 +7,13 @@ import { useCartStore } from "src/store/cartStore";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "@/components/contexts/session";
-import { Order, OrderItem } from "@/types/index";
+import { Order, OrderItem, VietnamAddressData } from "@/types/index";
 import { order } from "@/api/order-api";
 import { useMutation } from "@tanstack/react-query";
 
-type PaymentMethod = "cod" | "bank_transfer" | "credit_card";
+import rawData from "../../../../../public/json/tree.json";
+
+type PaymentMethod = "cod" | "bank_transfer" ;
 
 interface CheckoutForm {
   fullName: string;
@@ -34,28 +36,82 @@ export default function PageContent() {
   const [shippingFee, setShippingFee] = useState(30000);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
 
+  const [provinces, setProvinces] = useState<{ code: string; name: string }[]>(
+    [],
+  );
+  const [districts, setDistricts] = useState<{ code: string; name: string }[]>(
+    [],
+  );
+  const [wards, setWards] = useState<{ code: string; name: string }[]>([]);
+
+  const [selectedProvinceCode, setSelectedProvinceCode] = useState("");
+  const [selectedDistrictCode, setSelectedDistrictCode] = useState("");
+
+  const data = rawData as VietnamAddressData;
+  const addressData: VietnamAddressData = data;
+
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value;
+    setSelectedProvinceCode(code);
+    setSelectedDistrictCode("");
+    setWards([]);
+
+    const selectedProvince = addressData[code];
+    if (selectedProvince) {
+      const districtList = Object.entries(selectedProvince["quan-huyen"]).map(
+        ([code, value]) => ({
+          code,
+          name: value.name,
+        }),
+      );
+      setDistricts(districtList);
+    }
+  };
+
+  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value;
+    setSelectedDistrictCode(code);
+    const selectedDistrict =
+      addressData[selectedProvinceCode] &&
+      addressData[selectedProvinceCode]["quan-huyen"][code];
+    if (selectedDistrict) {
+      const wardList = Object.entries(selectedDistrict["xa-phuong"]).map(
+        ([code, value]) => ({
+          code,
+          name: value.name,
+        }),
+      );
+      setWards(wardList);
+    }
+  };
+
   const { mutate, isPending } = useMutation({
     mutationFn: order,
     onSuccess: (response) => {
       const paymentMethodText =
         paymentMethod === "cod"
           ? "COD - Thanh toán khi nhận hàng"
-          : paymentMethod === "bank_transfer"
-            ? "Chuyển khoản ngân hàng"
-            : "Thẻ tín dụng/ghi nợ";
+          : "Chuyển khoản online";
 
       const data = getValues();
       const fullAddress = `${data.address}, ${data.ward}, ${data.district}, ${data.city}`;
 
-      clearCart();
-      //TODO: update later
-      router.push(
-        `/order-success?orderNumber=XXXX&total=${subtotal + shippingFee}&email=${encodeURIComponent(data.email)}&address=${encodeURIComponent(fullAddress)}&payment=${encodeURIComponent(paymentMethodText)}`,
-      );
-      toast({
-        title: "Đặt hàng thành công!",
-        description: "Đơn hàng đã được tạo. Cảm ơn bạn đã mua hàng!",
-      });
+      if (paymentMethod === "bank_transfer") {
+        window.location.href = response.data.paymentData;
+        clearCart();
+      } else {
+        clearCart();
+        setTimeout(() => {
+          router.push(
+            `/order-success?orderNumber=XXXX&total=${subtotal + shippingFee}&email=${encodeURIComponent(data.email)}&address=${encodeURIComponent(fullAddress)}&payment=${encodeURIComponent(paymentMethodText)}`,
+          );
+        }, 100);
+
+        toast({
+          title: "Đặt hàng thành công!",
+          description: "Đơn hàng đã được tạo. Cảm ơn bạn đã mua hàng!",
+        });
+      }
     },
   });
 
@@ -68,6 +124,12 @@ export default function PageContent() {
   } = useForm<CheckoutForm>();
 
   useEffect(() => {
+    const provinceList = Object.entries(addressData).map(([code, value]) => ({
+      code,
+      name: value.name,
+    }));
+    setProvinces(provinceList);
+
     if (!isAuthenticated) {
       router.push("/login?redirect=checkout");
       return;
@@ -210,68 +272,91 @@ export default function PageContent() {
               </div>
 
               <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                {/* Province */}
                 <div>
                   <label className="mb-1 block text-gray-700">
                     Tỉnh/Thành phố *
                   </label>
                   <select
-                    className={`w-full border p-2 ${errors.city ? "border-red-500" : "border-gray-300"} rounded focus:border-primary focus:outline-none`}
+                    className={`w-full border p-2 ${
+                      errors.city ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                     {...register("city", {
                       required: "Vui lòng chọn tỉnh/thành phố",
                     })}
+                    onChange={handleProvinceChange}
                   >
                     <option value="">Chọn tỉnh/thành phố</option>
-                    <option value="HN">Hà Nội</option>
-                    <option value="HCM">TP. Hồ Chí Minh</option>
-                    <option value="DN">Đà Nẵng</option>
-                    <option value="HP">Hải Phòng</option>
+                    {provinces.map((item) => (
+                      <option
+                        key={item.code}
+                        value={item.code}
+                      >
+                        {item.name}
+                      </option>
+                    ))}
                   </select>
                   {errors.city && (
-                    <p className="mt-1 text-sm text-red-500">
+                    <p className="text-sm text-red-500">
                       {errors.city.message}
                     </p>
                   )}
                 </div>
+
                 <div>
                   <label className="mb-1 block text-gray-700">
                     Quận/Huyện *
                   </label>
                   <select
-                    className={`w-full border p-2 ${errors.district ? "border-red-500" : "border-gray-300"} rounded focus:border-primary focus:outline-none`}
+                    className={`w-full border p-2 ${
+                      errors.district ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                     {...register("district", {
                       required: "Vui lòng chọn quận/huyện",
                     })}
+                    onChange={handleDistrictChange}
                   >
                     <option value="">Chọn quận/huyện</option>
-                    <option value="D1">Quận 1</option>
-                    <option value="D2">Quận 2</option>
-                    <option value="D3">Quận 3</option>
-                    <option value="D4">Quận 4</option>
+                    {districts.map((item) => (
+                      <option
+                        key={item.code}
+                        value={item.code}
+                      >
+                        {item.name}
+                      </option>
+                    ))}
                   </select>
                   {errors.district && (
-                    <p className="mt-1 text-sm text-red-500">
+                    <p className="text-sm text-red-500">
                       {errors.district.message}
                     </p>
                   )}
                 </div>
+
                 <div>
                   <label className="mb-1 block text-gray-700">
                     Phường/Xã *
                   </label>
                   <select
-                    className={`w-full border p-2 ${errors.ward ? "border-red-500" : "border-gray-300"} rounded focus:border-primary focus:outline-none`}
+                    className={`w-full border p-2 ${
+                      errors.ward ? "border-red-500" : "border-gray-300"
+                    } rounded`}
                     {...register("ward", {
                       required: "Vui lòng chọn phường/xã",
                     })}
                   >
                     <option value="">Chọn phường/xã</option>
-                    <option value="W1">Phường 1</option>
-                    <option value="W2">Phường 2</option>
-                    <option value="W3">Phường 3</option>
-                    <option value="W4">Phường 4</option>
+                    {wards.map((item) => (
+                      <option
+                        key={item.code}
+                        value={item.code}
+                      >
+                        {item.name}
+                      </option>
+                    ))}
                   </select>
                   {errors.ward && (
-                    <p className="mt-1 text-sm text-red-500">
+                    <p className="text-sm text-red-500">
                       {errors.ward.message}
                     </p>
                   )}
@@ -332,11 +417,13 @@ export default function PageContent() {
                     <span className="font-medium text-gray-800">
                       Thanh toán khi nhận hàng (COD)
                     </span>
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/64/6033/6033926.png"
-                      alt="COD"
-                      className="ml-auto h-8 w-auto"
-                    />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="ml-2 h-6 w-auto"
+                      viewBox="0 0 576 512"
+                    >
+                      <path d="M64 64C28.7 64 0 92.7 0 128L0 384c0 35.3 28.7 64 64 64l448 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64L64 64zm64 320l-64 0 0-64c35.3 0 64 28.7 64 64zM64 192l0-64 64 0c0 35.3-28.7 64-64 64zM448 384c0-35.3 28.7-64 64-64l0 64-64 0zm64-192c-35.3 0-64-28.7-64-64l64 0 0 64zM288 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" />
+                    </svg>
                   </label>
                 </div>
 
@@ -354,44 +441,15 @@ export default function PageContent() {
                     className="flex cursor-pointer items-center"
                   >
                     <span className="font-medium text-gray-800">
-                      Chuyển khoản ngân hàng
+                      Thanh toán trực tuyến (online)
                     </span>
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/64/2168/2168767.png"
-                      alt="Bank Transfer"
-                      className="ml-auto h-8 w-auto"
-                    />
-                  </label>
-                </div>
-
-                <div className="flex items-center rounded border border-gray-200 p-3">
-                  <input
-                    type="radio"
-                    id="payment-card"
-                    name="paymentMethod"
-                    className="mr-2"
-                    checked={paymentMethod === "credit_card"}
-                    onChange={() => setPaymentMethod("credit_card")}
-                  />
-                  <label
-                    htmlFor="payment-card"
-                    className="flex cursor-pointer items-center"
-                  >
-                    <span className="font-medium text-gray-800">
-                      Thẻ tín dụng/ghi nợ
-                    </span>
-                    <div className="ml-auto flex space-x-2">
-                      <img
-                        src="https://cdn-icons-png.flaticon.com/64/5968/5968299.png"
-                        alt="Visa"
-                        className="h-8 w-auto"
-                      />
-                      <img
-                        src="https://cdn-icons-png.flaticon.com/64/5968/5968144.png"
-                        alt="Mastercard"
-                        className="h-8 w-auto"
-                      />
-                    </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="ml-2 h-6 w-auto"
+                      viewBox="0 0 576 512"
+                    >
+                      <path d="M64 32C28.7 32 0 60.7 0 96l0 32 576 0 0-32c0-35.3-28.7-64-64-64L64 32zM576 224L0 224 0 416c0 35.3 28.7 64 64 64l448 0c35.3 0 64-28.7 64-64l0-192zM112 352l64 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-64 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm112 16c0-8.8 7.2-16 16-16l128 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-128 0c-8.8 0-16-7.2-16-16z" />
+                    </svg>
                   </label>
                 </div>
               </div>
@@ -498,7 +556,7 @@ export default function PageContent() {
                   className="ml-1 text-primary"
                 >
                   Điều khoản dịch vụ
-                </Link>{" "}
+                </Link>
                 của chúng tôi.
               </p>
             </div>

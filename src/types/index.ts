@@ -124,6 +124,13 @@ export interface Order {
   updatedAt?: string;
 }
 
+export type ResponsePayment = {
+  data: {
+    paymentData: string;
+  }
+};
+
+
 // Form types
 export interface ContactForm {
   name: string;
@@ -186,3 +193,22 @@ export type SortOption =
 export type PaymentMethod = "cod" | "bank_transfer" | "credit_card";
 export type ProductFilter = "all" | "new" | "bestseller" | "sale";
 export type StatusSupplier = "active" | "inactive" | "pending";
+
+export type Ward = {
+  name: string;
+  code: string;
+};
+
+export type District = {
+  name: string;
+  code: string;
+  "xa-phuong": Record<string, Ward>;
+};
+
+export type Province = {
+  name: string;
+  code: string;
+  "quan-huyen": Record<string, District>;
+};
+
+export type VietnamAddressData = Record<string, Province>;

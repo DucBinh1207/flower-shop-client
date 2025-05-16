@@ -30,7 +30,7 @@ export default function CartItemList({ items, clearCart }: CartItemListProps) {
       <div className="divide-y divide-gray-200">
         {items.map((item) => (
           <Item
-            key={item.id}
+            key={item.productId}
             item={item}
           />
         ))}
