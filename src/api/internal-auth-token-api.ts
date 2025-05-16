@@ -1,6 +1,6 @@
 import env from "@/configs/env";
 
-const apiURL = env.APP_URL + "/api/auth/token";
+const apiURL = env.APP_URL + "api/auth/token";
 
 /**
  * Save accessToken for internal server
