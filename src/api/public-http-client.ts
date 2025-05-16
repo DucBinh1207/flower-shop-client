@@ -28,7 +28,7 @@ const publicAxios = globalAxios.create({
     encode: encodeURIComponent,
   },
 
-  withCredentials: true,
+  withCredentials: false,
 });
 
 const privateHttpClientHeaderManager = {
