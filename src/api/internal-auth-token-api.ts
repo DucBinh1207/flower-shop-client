@@ -13,7 +13,7 @@ export async function saveAuthTokenForInternalServer(data: {
 }) {
   return fetch(apiURL, {
     method: "POST",
-    mode: "same-origin",
+    mode: "cors",
     credentials: "include",
     cache: "no-store",
     headers: {
@@ -34,7 +34,7 @@ export async function getAuthTokenFromInternalServer(): Promise<string | null> {
   try {
     const response = await fetch(apiURL, {
       method: "GET",
-      mode: "same-origin",
+      mode: "cors",
       credentials: "include",
       cache: "no-store",
     });
@@ -57,7 +57,7 @@ export async function getAuthTokenFromInternalServer(): Promise<string | null> {
 export async function deleteAuthTokenFromInternalServer() {
   return fetch(apiURL, {
     method: "DELETE",
-    mode: "same-origin",
+    mode: "cors",
     credentials: "include",
     cache: "no-store",
   });
