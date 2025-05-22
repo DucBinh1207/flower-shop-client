@@ -2,16 +2,16 @@ import { Category } from "@/types/index";
 import React from "react";
 
 interface FilterSearchProps {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
+  search: string;
+  setSearch: (value: string) => void;
   categoryFilter: string | "all";
   setCategoryFilter: (category: string | "all") => void;
   categories: Category[];
 }
 
 export default function FilterSearch({
-  searchTerm,
-  setSearchTerm,
+  search,
+  setSearch,
   categoryFilter,
   setCategoryFilter,
   categories,
@@ -24,8 +24,8 @@ export default function FilterSearch({
             type="text"
             placeholder="Tìm kiếm sản phẩm..."
             className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <div className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-500">
             <i className="bx bx-search text-xl"></i>

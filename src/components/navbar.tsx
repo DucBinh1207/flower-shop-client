@@ -16,6 +16,7 @@ import { useSession } from "./contexts/session";
 import { deleteAuthTokenFromInternalServer } from "@/api/internal-auth-token-api";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useWishlistStore } from "src/store/wishlistStore";
 
 export function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -27,6 +28,7 @@ export function Navbar() {
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLLIElement>(null);
 
+  const { items : WishListItem } = useWishlistStore();
   const { items } = useCartStore();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const { isAuthenticated, user, clearSession } = useSession();
@@ -213,7 +215,7 @@ export function Navbar() {
               >
                 <i className="bx bx-heart text-xl transition-transform group-hover:scale-110" />
                 <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-red-500 to-red-600 text-xs font-medium text-white shadow-sm">
-                  0
+                  {WishListItem.length}
                 </span>
               </Link>
 

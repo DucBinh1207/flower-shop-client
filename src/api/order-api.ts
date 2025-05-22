@@ -1,15 +1,17 @@
+import { StateOrderQuery } from "src/app/admin/orders/hooks/use-orders";
 import { Order, ResponsePayment } from "../types";
 import PublicHttpClient from "./public-http-client";
 import { DataResponseWithPagination } from "./type";
 
 const httpClient = new PublicHttpClient("orders");
 
-export async function getOrders() {
-  const response = await httpClient.get<DataResponseWithPagination<Order[]>>(
-    {},
-  );
+export async function getOrders(params: Partial<StateOrderQuery>) {
+  const response = await httpClient.get<DataResponseWithPagination<Order[]>>({
+    params,
+  });
 
-  return response.data.data;
+  const data = response.data.data;
+  return data;
 }
 
 export async function order(data: Order) {

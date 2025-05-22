@@ -13,7 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import rawData from "../../../../../public/json/tree.json";
 
-type PaymentMethod = "cod" | "bank_transfer" ;
+type PaymentMethod = "cod" | "bank_transfer";
 
 interface CheckoutForm {
   fullName: string;
@@ -93,19 +93,18 @@ export default function PageContent() {
           ? "COD - Thanh toán khi nhận hàng"
           : "Chuyển khoản online";
 
-      const data = getValues();
-      const fullAddress = `${data.address}, ${data.ward}, ${data.district}, ${data.city}`;
-
       if (paymentMethod === "bank_transfer") {
-        window.location.href = response.data.paymentData;
+        if (response.data.paymentData)
+          window.location.href = response.data.paymentData;
         clearCart();
       } else {
         clearCart();
-        setTimeout(() => {
-          router.push(
-            `/order-success?orderNumber=XXXX&total=${subtotal + shippingFee}&email=${encodeURIComponent(data.email)}&address=${encodeURIComponent(fullAddress)}&payment=${encodeURIComponent(paymentMethodText)}`,
-          );
-        }, 100);
+        if (response.data.order)
+          setTimeout(() => {
+            router.push(
+              `/order-success?orderNumber=${response.data.order?.orderId}&total=${response.data.order?.total}&email=${response.data.order?.customerEmail}&address=${response.data.order?.shippingAddress}&payment=${encodeURIComponent(paymentMethodText)}`,
+            );
+          }, 100);
 
         toast({
           title: "Đặt hàng thành công!",
@@ -174,6 +173,16 @@ export default function PageContent() {
       subtotal: item.price * item.quantity,
       orderId,
     }));
+    const cityName = addressData[data.city]!.name;
+    const districtName =
+      addressData[data.city]!["quan-huyen"][data.district]!.name;
+    const wardName =
+      addressData[data.city]!["quan-huyen"][data.district]!["xa-phuong"][
+        data.ward
+      ]!.name;
+
+    const fullAddress = `${data.address}, ${wardName}, ${districtName}, ${cityName}`;
+
     const orderDetails: Order = {
       items: itemFormatted,
       subtotal,
@@ -185,7 +194,7 @@ export default function PageContent() {
       customerName: data.fullName,
       customerEmail: data.email,
       customerPhone: data.phone,
-      shippingAddress: data.address,
+      shippingAddress: fullAddress,
       status: "pending",
       paymentStatus: "pending",
       discount: 0,

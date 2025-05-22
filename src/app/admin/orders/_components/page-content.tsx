@@ -1,61 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { orders, Order } from "@/constants/orders";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { getOrders } from "@/api/order-api";
+import { useOrders } from "../hooks/use-orders";
+import PaginationList from "@/components/ui/pagination-list";
+import { Order } from "@/types/index";
 
 export default function PageContent() {
-  const { data } = useQuery({
-    queryKey: ["orders"],
-    queryFn: getOrders,
-  });
-
-  const [orderList, setOrderList] = useState<Order[]>(orders);
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>(orders);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const [openStatusDropdown, setOpenStatusDropdown] = useState<number | null>(
+  const [openStatusDropdown, setOpenStatusDropdown] = useState<string | null>(
     null,
   );
   const [openModalDropdown, setOpenModalDropdown] = useState(false);
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Filter orders based on search term and status
-    let filtered = [...orderList];
+  const { data, state, isLoading, totalPages, setState } = useOrders();
 
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (order) =>
-          order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.id.toString().includes(searchTerm) ||
-          order.customerEmail
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          order.customerPhone.includes(searchTerm),
-      );
-    }
 
-    if (statusFilter !== "all") {
-      filtered = filtered.filter((order) => order.status === statusFilter);
-    }
-
-    setFilteredOrders(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
-  }, [orderList, searchTerm, statusFilter]);
-
-  // Get current orders for pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
   const handleViewOrder = (order: Order) => {
     setSelectedOrder(order);
@@ -68,28 +33,24 @@ export default function PageContent() {
   };
 
   const handleUpdateStatus = (
-    orderId: number,
+    orderId: string,
     newStatus: "pending" | "processing" | "shipped" | "delivered" | "cancelled",
   ) => {
     // Update order status
-    const updatedOrders = orderList.map((order) =>
-      order.id === orderId ? { ...order, status: newStatus } : order,
-    );
-
-    setOrderList(updatedOrders);
-
+    // const updatedOrders = orderList.map((order) =>
+    //   order.id === orderId ? { ...order, status: newStatus } : order,
+    // );
+    // setOrderList(updatedOrders);
     // If the order is currently selected in the modal, update that too
-    if (selectedOrder && selectedOrder.id === orderId) {
-      setSelectedOrder({ ...selectedOrder, status: newStatus });
-    }
-
-    toast({
-      title: "Cập nhật thành công",
-      description: `Đã cập nhật trạng thái đơn hàng #${orderId} thành ${getStatusText(newStatus)}`,
-    });
+    // if (selectedOrder && selectedOrder.id === orderId) {
+    //   setSelectedOrder({ ...selectedOrder, status: newStatus });
+    // }
+    // toast({
+    //   title: "Cập nhật thành công",
+    //   description: `Đã cập nhật trạng thái đơn hàng #${orderId} thành ${getStatusText(newStatus)}`,
+    // });
   };
 
-  // Helper function to get status text in Vietnamese
   const getStatusText = (status: string) => {
     switch (status) {
       case "pending":
@@ -107,7 +68,6 @@ export default function PageContent() {
     }
   };
 
-  // Helper function to get payment method text in Vietnamese
   const getPaymentMethodText = (method: string) => {
     switch (method) {
       case "cod":
@@ -119,7 +79,6 @@ export default function PageContent() {
     }
   };
 
-  // Helper function to get payment status text in Vietnamese
   const getPaymentStatusText = (status: string) => {
     switch (status) {
       case "pending":
@@ -131,6 +90,15 @@ export default function PageContent() {
       default:
         return status;
     }
+  };
+
+  const handleSelectFilter = (value: string) => {
+    if (value !== "all") setState({ status: value });
+    else
+      setState({
+        status: "",
+      });
+    setStatusFilter(value);
   };
 
   return (
@@ -160,7 +128,7 @@ export default function PageContent() {
             <select
               className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => handleSelectFilter(e.target.value)}
             >
               <option value="all">Tất cả trạng thái</option>
               <option value="pending">Chờ xử lý</option>
@@ -203,7 +171,7 @@ export default function PageContent() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-              {currentOrders.map((order) => (
+              {data.map((order) => (
                 <tr
                   key={order.id}
                   className="hover:bg-gray-50"
@@ -218,7 +186,9 @@ export default function PageContent() {
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                    {new Date(order.createdAt).toLocaleDateString("vi-VN")}
+                    {new Date(order.createdAt ?? "").toLocaleDateString(
+                            "vi-VN",
+                          )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                     {order.total.toLocaleString()}₫
@@ -321,7 +291,7 @@ export default function PageContent() {
         </div>
 
         {/* Empty state */}
-        {filteredOrders.length === 0 && (
+        {data.length === 0 && (
           <div className="py-8 text-center text-gray-500">
             <i className="bx bx-package mb-2 text-5xl"></i>
             <p>Không tìm thấy đơn hàng nào</p>
@@ -329,44 +299,17 @@ export default function PageContent() {
         )}
 
         {/* Pagination */}
-        {filteredOrders.length > 0 && (
-          <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4">
-            <div className="text-sm text-gray-500">
-              Hiển thị {indexOfFirstItem + 1} -{" "}
-              {Math.min(indexOfLastItem, filteredOrders.length)} trong số{" "}
-              {filteredOrders.length} đơn hàng
-            </div>
-            <div className="flex space-x-2">
-              <button
-                className={`rounded border px-3 py-1 ${currentPage === 1 ? "cursor-not-allowed bg-gray-100 text-gray-400" : "border-primary bg-white text-primary hover:bg-primary-light"}`}
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-              >
-                <i className="bx bx-chevron-left"></i>
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    className={`rounded border px-3 py-1 ${currentPage === page ? "bg-primary text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
-                    onClick={() => setCurrentPage(page)}
-                  >
-                    {page}
-                  </button>
-                ),
-              )}
-              <button
-                className={`rounded border px-3 py-1 ${currentPage === totalPages ? "cursor-not-allowed bg-gray-100 text-gray-400" : "border-primary bg-white text-primary hover:bg-primary-light"}`}
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
-                disabled={currentPage === totalPages}
-              >
-                <i className="bx bx-chevron-right"></i>
-              </button>
-            </div>
-          </div>
-        )}
+        <div className="mt-2">
+          <PaginationList
+            totalPage={totalPages}
+            currentPage={state.page}
+            onChangePage={(page) =>
+              setState({
+                page,
+              })
+            }
+          />
+        </div>
       </div>
 
       {/* Order Detail Modal */}
@@ -418,7 +361,7 @@ export default function PageContent() {
                   <div className="rounded-lg bg-gray-50 p-4">
                     <p className="text-sm">
                       <span className="font-medium">Ngày đặt:</span>{" "}
-                      {new Date(selectedOrder.createdAt).toLocaleDateString(
+                      {new Date(selectedOrder.createdAt ?? "").toLocaleDateString(
                         "vi-VN",
                       )}
                     </p>
@@ -478,7 +421,7 @@ export default function PageContent() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {selectedOrder.items.map((item) => (
+                    {/* {selectedOrder.items.map((item) => (
                       <tr key={item.id}>
                         <td className="whitespace-nowrap px-6 py-4">
                           <div className="flex items-center">
@@ -504,7 +447,7 @@ export default function PageContent() {
                           {item.subtotal.toLocaleString()}₫
                         </td>
                       </tr>
-                    ))}
+                    ))} */}
                   </tbody>
                 </table>
               </div>

@@ -3,6 +3,9 @@ import { useState, useRef, useEffect } from "react";
 
 import { searchProductsByName } from "@/constants/products";
 import { useOnClickOutside } from "@/hooks/use-click-outside";
+import useDebounceCallback from "@/hooks/use-debounce-callback";
+import { useProductBySearch } from "src/app/(public)/products/_hooks/use-products-by-search";
+import ImageSearchButton from "./image-search-button";
 
 interface SearchBarProps {
   isMobile?: boolean;
@@ -16,13 +19,18 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const { data, state, setState } = useProductBySearch();
+
+  const [searchData, setSearchData] = useState(state.search);
+
+  const [handleDebounceSearch] = useDebounceCallback(() => {
+    if ( searchData.length > 1) setState({ search: searchData });
+  }, 300);
+
   useOnClickOutside(searchRef, () => {
     setShowResults(false);
     setIsSearchFocused(false);
   });
-
-  const searchResults =
-    query.length > 2 ? searchProductsByName(query).slice(0, 5) : [];
 
   // Popular search term suggestions
   const popularSearchTerms = [
@@ -66,6 +74,7 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+
   return (
     <div
       className={`relative w-full ${isSearchFocused ? "z-20" : ""}`}
@@ -82,13 +91,13 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
             <i className="bx bx-search text-lg" />
           </div>
           <input
-            ref={inputRef}
             type="text"
             placeholder="Tìm hạt giống, hoa, cây cảnh... (Ctrl+K)"
             className={`w-full rounded-full border py-2.5 pl-10 pr-[4.5rem] ${isSearchFocused ? "border-primary" : "border-gray-200"} bg-gray-50/60 transition-all placeholder:text-gray-400 focus:border-primary focus:bg-white focus:outline-none`}
-            value={query}
+            value={searchData}
             onChange={(e) => {
-              setQuery(e.target.value);
+              setSearchData(e.target.value);
+              handleDebounceSearch();
               if (e.target.value.length > 1) {
                 setShowResults(true);
               } else {
@@ -97,7 +106,7 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
             }}
             onFocus={() => {
               setIsSearchFocused(true);
-              if (query.length > 1) {
+              if (searchData.length > 1) {
                 setShowResults(true);
               }
             }}
@@ -113,7 +122,7 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
                 <i className="bx bx-x text-lg" />
               </button>
             )}
-            <button
+            {/* <button
               type="button"
               onClick={handleSearchByImage}
               className="rounded-full p-1 text-gray-600 transition-colors hover:bg-gray-100 hover:text-primary"
@@ -121,7 +130,8 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
               aria-label="Tìm kiếm bằng hình ảnh"
             >
               <i className="bx bx-camera text-lg" />
-            </button>
+            </button> */}
+            <ImageSearchButton/>
           </div>
 
           {isSearchFocused && (
@@ -145,18 +155,18 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
       {/* Search dropdown - either results or suggestions */}
       {isSearchFocused && (
         <div className="absolute left-0 right-0 z-20 mt-1 max-h-[70vh] overflow-hidden rounded-lg bg-white shadow-lg">
-          {showResults && searchResults.length > 0 ? (
+          {showResults && data.length > 0 ? (
             <div>
               <div className="border-b border-gray-50 px-4 py-2">
                 <h3 className="text-sm font-medium text-gray-700">
                   Kết quả tìm kiếm
                 </h3>
                 <p className="mt-0.5 text-xs text-gray-500">
-                  Tìm thấy {searchResults.length} sản phẩm
+                  Tìm thấy {data.length} sản phẩm
                 </p>
               </div>
               <ul className="max-h-[35vh] overflow-y-auto py-1">
-                {searchResults.map((product) => (
+                {data.map((product) => (
                   <li key={product.id}>
                     <a
                       href={`/products/${product.id}`}
@@ -204,16 +214,16 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
                 ))}
                 <li className="border-t border-gray-50 p-2">
                   <a
-                    href={`/search?q=${encodeURIComponent(query)}`}
+                    href={`/search?q=${encodeURIComponent(searchData)}&p=1&l=9&minPrice=0&maxPrice=0`}
                     className="block rounded-md px-3 py-2 text-center text-sm font-medium text-primary transition-colors hover:bg-gray-50/80"
                     onClick={(e) => {
                       e.preventDefault();
-                      router.push(`/search?q=${encodeURIComponent(query)}`);
+                      router.push(`/products?k=${encodeURIComponent(searchData)}&p=1&l=9&minPrice=0&maxPrice=0`);
                       setShowResults(false);
                       setIsSearchFocused(false);
                     }}
                   >
-                    Xem tất cả kết quả cho "{query}"
+                    Xem tất cả kết quả cho "{searchData}"
                     <i className="bx bx-right-arrow-alt ml-1 inline-block" />
                   </a>
                 </li>

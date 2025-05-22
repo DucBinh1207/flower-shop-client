@@ -30,7 +30,7 @@ export default function PageContent({ product }: ProductDetailViewProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
-      {/* <div className="mb-6 text-sm">
+      <div className="mb-6 text-sm">
         <Link
           href="/"
           className="text-gray-500 hover:text-primary"
@@ -46,7 +46,7 @@ export default function PageContent({ product }: ProductDetailViewProps) {
         </Link>
         <span className="mx-2">/</span>
         <span className="text-gray-800">{product.name}</span>
-      </div> */}
+      </div>
 
       <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2">
         <ProductGallery product={product} />

@@ -57,7 +57,7 @@ export const middleware: NextMiddleware = async (request) => {
       DataResponse<{
         user: User;
       }>
-    >(`/auth/profile`, {}, true);
+    >(`auth/profile`, {}, true);
 
     if (userData) {
       if (

@@ -9,6 +9,7 @@ export interface Product {
   originalPrice: number | null;
   discount: number | null;
   categoryId: string;
+  supplierId: string;
   image: string;
   images: string[];
   rating: number;
@@ -22,9 +23,11 @@ export interface Product {
   createdAt: string;
 }
 
-export interface ProductDetail extends Omit<Product, "categoryId"> {
+export interface ProductDetail extends Omit<Product, "categoryId" | "supplierId"> {
   categoryId: Category;
+  supplierId: Supplier;
 }
+
 
 // Category types
 export interface Category {
@@ -104,7 +107,7 @@ export type OrderStatus =
 export type PaymentStatus = "pending" | "paid" | "failed";
 
 export interface Order {
-  id?: string;
+  id: string;
   orderId: string;
   userId: string;
   customerName: string;
@@ -126,10 +129,10 @@ export interface Order {
 
 export type ResponsePayment = {
   data: {
-    paymentData: string;
-  }
+    paymentData?: string;
+    order?: Order;
+  };
 };
-
 
 // Form types
 export interface ContactForm {
@@ -190,7 +193,7 @@ export type SortOption =
   | "newest"
   | "rating"
   | "popularity";
-export type PaymentMethod = "cod" | "bank_transfer" ;
+export type PaymentMethod = "cod" | "bank_transfer";
 export type ProductFilter = "all" | "new" | "bestseller" | "sale";
 export type StatusSupplier = "active" | "inactive" | "pending";
 
@@ -212,3 +215,31 @@ export type Province = {
 };
 
 export type VietnamAddressData = Record<string, Province>;
+
+export type ResponseDashboardOverview = {
+  status: string;
+  data: {
+    totalOrder: number;
+    totalPendingOrder: number;
+    totalIncome: number;
+    currentMonthIncome: number;
+    totalUser: number;
+  };
+};
+
+export type ResponseRecentOrders = {
+  orders: Order[];
+};
+
+export type productPerCategory = {
+  category: string,
+  count : number
+}
+
+export type ResponseDashboardStatistics = {
+  totalProduct: number,
+  totalCategory: number,
+  orderCompletionRate: number,
+  productTypePerCategory: productPerCategory[]
+};
+

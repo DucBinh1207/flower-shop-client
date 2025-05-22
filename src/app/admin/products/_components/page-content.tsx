@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { products } from "@/constants/products";
-import { categories } from "@/constants/categories";
 import { useToast } from "@/hooks/use-toast";
 import ProductHeader from "./header";
 import FilterSearch from "./filter";
@@ -10,10 +8,14 @@ import ProductTable from "./table";
 import ProductModal from "./product-modal";
 import DeleteConfirmationModal from "./delete-confirm-modal";
 import { Product } from "@/types/index";
+import { useProductBySearch } from "../_hooks/use-products-by-search";
+import PaginationList from "@/components/ui/pagination-list";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createProduct, deleteProduct, updateProduct } from "@/api/product-api";
+import { useAllCategory } from "../_hooks/use-categories";
+import { useProductFiltering } from "../_hooks/use-products";
 
 export default function ProductManagementPage() {
-  const [productList, setProductList] = useState<Product[]>(products);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
@@ -22,27 +24,51 @@ export default function ProductManagementPage() {
   const [formData, setFormData] = useState<Partial<Product>>({});
 
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    // Filter products based on search term and category
-    let filtered = [...productList];
+  const { data: categories } = useAllCategory();
 
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
-    }
+  const {
+    data: products,
+    state,
+    isLoading,
+    totalPages,
+    setState,
+  } = useProductFiltering();
 
-    if (categoryFilter !== "all") {
-      filtered = filtered.filter(
-        (product) => product.categoryId === categoryFilter,
-      );
-    }
 
-    setFilteredProducts(filtered);
-  }, [productList, searchTerm, categoryFilter]);
+  const { mutate } = useMutation({
+    mutationFn: createProduct,
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast({
+        title: "Thêm thành công",
+        description: `Đã thêm sản phẩm `,
+      });
+    },
+  });
+
+  const { mutate: mutateUpdate } = useMutation({
+    mutationFn: updateProduct,
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast({
+        title: "Cập nhật thành công!",
+        description: `Sản phẩm đã được cập nhật!`,
+      });
+    },
+  });
+
+  const { mutate: mutateDelete } = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast({
+        title: "Xóa thành công!",
+        description: `Sản phẩm đã được xóa!`,
+      });
+    },
+  });
 
   const handleOpenModal = (product?: Product) => {
     if (product) {
@@ -119,38 +145,19 @@ export default function ProductManagementPage() {
         ? Number(submittedFormData.discount)
         : null,
       categoryId: submittedFormData.categoryId,
-      rating: Number(submittedFormData.rating || 0),
-      reviewCount: Number(submittedFormData.reviewCount || 0),
       stock: Number(submittedFormData.stock || 0),
       seedCount: Number(submittedFormData.seedCount || 0),
     } as Product;
 
     if (currentProduct) {
-      // Update existing product
-      const updatedProducts = productList.map((prod) =>
-        prod.id === currentProduct.id
-          ? { ...prod, ...productData, id: currentProduct.id }
-          : prod,
-      );
-      setProductList(updatedProducts);
-
-      toast({
-        title: "Cập nhật thành công",
-        description: `Đã cập nhật sản phẩm "${submittedFormData.name}"`,
-      });
+      mutateUpdate({ id: currentProduct.id, data: productData });
     } else {
-      // Add new product
       const newProduct: Product = {
         ...productData,
         createdAt: new Date().toISOString(),
       } as Product;
 
-      setProductList([...productList, newProduct]);
-
-      toast({
-        title: "Thêm thành công",
-        description: `Đã thêm sản phẩm "${submittedFormData.name}"`,
-      });
+      mutate(newProduct);
     }
 
     handleCloseModal();
@@ -159,17 +166,21 @@ export default function ProductManagementPage() {
   const handleDelete = () => {
     if (!currentProduct) return;
 
-    const filteredProducts = productList.filter(
-      (prod) => prod.id !== currentProduct.id,
-    );
-    setProductList(filteredProducts);
-
-    toast({
-      title: "Xóa thành công",
-      description: `Đã xóa sản phẩm "${currentProduct.name}"`,
-    });
+    mutateDelete({ id: currentProduct.id });
 
     handleCloseDeleteModal();
+  };
+
+  const handleFilter = (categoryValue: string) => {
+    if (categoryValue !== "all")
+      setState({
+        categoryId: categoryValue,
+      });
+    else
+      setState({
+        categoryId: "",
+      });
+    setCategoryFilter(categoryValue);
   };
 
   return (
@@ -177,19 +188,35 @@ export default function ProductManagementPage() {
       <ProductHeader onAddProduct={() => handleOpenModal()} />
 
       <FilterSearch
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
+        search={state.search}
+        setSearch={(search) =>
+          setState({
+            search,
+          })
+        }
         categoryFilter={categoryFilter}
-        setCategoryFilter={setCategoryFilter}
+        setCategoryFilter={handleFilter}
         categories={categories}
       />
 
       <ProductTable
-        products={filteredProducts}
+        products={products}
         categories={categories}
         onEdit={handleOpenModal}
         onDelete={handleOpenDeleteModal}
       />
+
+      <div className="mt-2">
+        <PaginationList
+          totalPage={totalPages}
+          currentPage={state.page}
+          onChangePage={(page) =>
+            setState({
+              page,
+            })
+          }
+        />
+      </div>
 
       {isModalOpen && (
         <ProductModal

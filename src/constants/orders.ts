@@ -10,8 +10,8 @@ export interface OrderItem {
 }
 
 export interface Order {
-  id: number;
-  userId: number;
+  id: string;
+  userId: string;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
@@ -31,8 +31,8 @@ export interface Order {
 
 export const orders: Order[] = [
   {
-    id: 1,
-    userId: 2,
+    id: "1",
+    userId: "2",
     customerName: "Nguyễn Thị Thanh",
     customerEmail: "nguyenquocdung@gmail.com",
     customerPhone: "0912345678",
@@ -95,8 +95,8 @@ export const orders: Order[] = [
     updatedAt: "2023-03-02",
   },
   {
-    id: 2,
-    userId: 3,
+    id: "2",
+    userId: "3",
     customerName: "Trần Văn Minh",
     customerEmail: "tranvanminh@gmail.com",
     customerPhone: "0923456789",
@@ -137,8 +137,8 @@ export const orders: Order[] = [
     updatedAt: "2023-04-20",
   },
   {
-    id: 3,
-    userId: 4,
+    id: "3",
+    userId: "44",
     customerName: "Lê Thị Hương",
     customerEmail: "lethihuong@gmail.com",
     customerPhone: "0934567890",
@@ -190,8 +190,8 @@ export const orders: Order[] = [
     updatedAt: "2023-09-08",
   },
   {
-    id: 4,
-    userId: 2,
+    id: "4",
+    userId: "2",
     customerName: "Nguyễn Thị Thanh",
     customerEmail: "nguyenquocdung@gmail.com",
     customerPhone: "0912345678",
@@ -243,8 +243,8 @@ export const orders: Order[] = [
     updatedAt: "2023-10-10",
   },
   {
-    id: 5,
-    userId: 5,
+    id: "5",
+    userId: "5",
     customerName: "Phạm Văn Đức",
     customerEmail: "phamvanduc@gmail.com",
     customerPhone: "0945678901",
@@ -297,10 +297,10 @@ export const orders: Order[] = [
   },
 ];
 
-export const getOrdersByUserId = (userId: number): Order[] => {
+export const getOrdersByUserId = (userId: string): Order[] => {
   return orders.filter((order) => order.userId === userId);
 };
 
-export const getOrderById = (id: number): Order | undefined => {
+export const getOrderById = (id: string): Order | undefined => {
   return orders.find((order) => order.id === id);
 };

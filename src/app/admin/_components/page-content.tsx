@@ -6,9 +6,29 @@ import { products } from "@/constants/products";
 import { categories } from "@/constants/categories";
 import { users } from "@/constants/users";
 import Link from "next/link";
+import {
+  getDashboardOverview,
+  getDashboardStatistics,
+  getRecentOrders,
+} from "@/api/dashboard-api";
+import { useQuery } from "@tanstack/react-query";
 
 export default function PageContent() {
-  const [recentOrders, setRecentOrders] = useState(orders.slice(0, 5));
+  const { data } = useQuery({
+    queryKey: ["dashboard-overview"],
+    queryFn: getDashboardOverview,
+  });
+
+  const { data: recentOrders } = useQuery({
+    queryKey: ["recent-orders"],
+    queryFn: getRecentOrders,
+  });
+
+  const { data: dashboardStatistics } = useQuery({
+    queryKey: ["dashboard-statistics"],
+    queryFn: getDashboardStatistics,
+  });
+
   const [stats, setStats] = useState({
     totalOrders: 0,
     totalProducts: 0,
@@ -19,17 +39,15 @@ export default function PageContent() {
   });
 
   useEffect(() => {
-    // Calculate dashboard stats
     setStats({
-      totalOrders: orders.length,
+      totalOrders: data?.totalOrder || 0,
       totalProducts: products.length,
       totalCategories: categories.length,
-      totalUsers: users.filter((user) => user.role === "customer").length,
-      totalRevenue: orders.reduce((sum, order) => sum + order.total, 0),
-      pendingOrders: orders.filter((order) => order.status === "pending")
-        .length,
+      totalUsers: data?.totalUser || 0,
+      totalRevenue: data?.totalIncome || 0,
+      pendingOrders: data?.totalPendingOrder || 0,
     });
-  }, []);
+  }, [data]);
 
   return (
     <div>
@@ -71,16 +89,16 @@ export default function PageContent() {
               <i className="bx bx-money text-2xl text-green-600"></i>
             </div>
             <div>
-              <h3 className="text-sm text-gray-500">Doanh thu</h3>
+              <h3 className="text-sm text-gray-500">Tổng Doanh thu</h3>
               <p className="text-2xl font-semibold">
                 {stats.totalRevenue.toLocaleString()}₫
               </p>
             </div>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-gray-500">Tháng này</span>
+            <span className="text-sm text-gray-500">Doanh thú tháng này</span>
             <span className="text-sm text-green-500">
-              +12.5% so với tháng trước
+              {data?.currentMonthIncome}₫
             </span>
           </div>
         </div>
@@ -97,7 +115,6 @@ export default function PageContent() {
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-gray-500">Khách hàng đã đăng ký</span>
-            <span className="text-sm text-purple-500">+5 người dùng mới</span>
           </div>
         </div>
       </div>
@@ -140,36 +157,45 @@ export default function PageContent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
-                {recentOrders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="hover:bg-gray-50"
-                  >
-                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
-                      #{order.id}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                      {order.customerName}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                      {order.total.toLocaleString()}₫
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm">
-                      <span
-                        className={`rounded-full px-2 py-1 text-xs font-medium ${order.status === "pending" ? "bg-yellow-100 text-yellow-800" : ""} ${order.status === "processing" ? "bg-blue-100 text-blue-800" : ""} ${order.status === "shipped" ? "bg-indigo-100 text-indigo-800" : ""} ${order.status === "delivered" ? "bg-green-100 text-green-800" : ""} ${order.status === "cancelled" ? "bg-red-100 text-red-800" : ""} `}
-                      >
-                        {order.status === "pending" ? "Chờ xử lý" : ""}
-                        {order.status === "processing" ? "Đang xử lý" : ""}
-                        {order.status === "shipped" ? "Đang giao" : ""}
-                        {order.status === "delivered" ? "Đã giao" : ""}
-                        {order.status === "cancelled" ? "Đã hủy" : ""}
-                      </span>
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                      {new Date(order.createdAt).toLocaleDateString("vi-VN")}
-                    </td>
-                  </tr>
-                ))}
+                {recentOrders && (
+                  <>
+                    {recentOrders &&
+                      recentOrders.map((order) => (
+                        <tr
+                          key={order.orderId}
+                          className="hover:bg-gray-50"
+                        >
+                          <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                            #{order.orderId}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            {order.customerName}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            {order.total.toLocaleString()}₫
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm">
+                            <span
+                              className={`rounded-full px-2 py-1 text-xs font-medium ${order.status === "pending" ? "bg-yellow-100 text-yellow-800" : ""} ${order.status === "processing" ? "bg-blue-100 text-blue-800" : ""} ${order.status === "shipped" ? "bg-indigo-100 text-indigo-800" : ""} ${order.status === "delivered" ? "bg-green-100 text-green-800" : ""} ${order.status === "cancelled" ? "bg-red-100 text-red-800" : ""} `}
+                            >
+                              {order.status === "pending" ? "Chờ xử lý" : ""}
+                              {order.status === "processing"
+                                ? "Đang xử lý"
+                                : ""}
+                              {order.status === "shipped" ? "Đang giao" : ""}
+                              {order.status === "delivered" ? "Đã giao" : ""}
+                              {order.status === "cancelled" ? "Đã hủy" : ""}
+                            </span>
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            {new Date(order.createdAt ?? "").toLocaleDateString(
+                              "vi-VN",
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </>
+                )}
               </tbody>
             </table>
           </div>
@@ -186,14 +212,8 @@ export default function PageContent() {
               <div className="mb-1 flex justify-between">
                 <span className="text-sm text-gray-600">Sản phẩm</span>
                 <span className="text-sm font-medium">
-                  {stats.totalProducts}
+                  {dashboardStatistics?.totalProduct}
                 </span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-gray-200">
-                <div
-                  className="h-2 rounded-full bg-primary"
-                  style={{ width: "75%" }}
-                ></div>
               </div>
             </div>
 
@@ -201,14 +221,8 @@ export default function PageContent() {
               <div className="mb-1 flex justify-between">
                 <span className="text-sm text-gray-600">Danh mục</span>
                 <span className="text-sm font-medium">
-                  {stats.totalCategories}
+                  {dashboardStatistics?.totalCategory}
                 </span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-gray-200">
-                <div
-                  className="h-2 rounded-full bg-accent"
-                  style={{ width: "60%" }}
-                ></div>
               </div>
             </div>
 
@@ -217,28 +231,9 @@ export default function PageContent() {
                 <span className="text-sm text-gray-600">
                   Tỷ lệ hoàn thành đơn
                 </span>
-                <span className="text-sm font-medium">85%</span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-gray-200">
-                <div
-                  className="h-2 rounded-full bg-green-500"
-                  style={{ width: "85%" }}
-                ></div>
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-1 flex justify-between">
-                <span className="text-sm text-gray-600">
-                  Đánh giá trung bình
+                <span className="text-sm font-medium">
+                  {dashboardStatistics?.orderCompletionRate}%
                 </span>
-                <span className="text-sm font-medium">4.6/5</span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-gray-200">
-                <div
-                  className="h-2 rounded-full bg-yellow-500"
-                  style={{ width: "92%" }}
-                ></div>
               </div>
             </div>
           </div>
@@ -248,17 +243,23 @@ export default function PageContent() {
               Phân bổ sản phẩm theo danh mục
             </h3>
             <div className="space-y-2">
-              {categories.slice(0, 5).map((category) => (
-                <div
-                  key={category.id}
-                  className="flex items-center justify-between"
-                >
-                  <span className="text-sm text-gray-600">{category.name}</span>
-                  <span className="text-sm font-medium">
-                    {category.productCount}
-                  </span>
-                </div>
-              ))}
+              {dashboardStatistics && (
+                <>
+                  {dashboardStatistics.productTypePerCategory.map((category,id) => (
+                    <div
+                      key={id}
+                      className="flex items-center justify-between"
+                    >
+                      <span className="text-sm text-gray-600">
+                        {category.category}
+                      </span>
+                      <span className="text-sm font-medium">
+                        {category.count}
+                      </span>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
           </div>
         </div>

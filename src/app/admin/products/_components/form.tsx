@@ -1,5 +1,8 @@
+import { getSuppliers } from "@/api/supply-api";
 import { Category, Product } from "@/types/index";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import { useAllCategory } from "../_hooks/use-categories";
 
 interface ProductFormFieldsProps {
   formData: Partial<Product>;
@@ -14,6 +17,11 @@ export default function ProductFormFields({
   categories,
   currentProduct,
 }: ProductFormFieldsProps) {
+  const { data: { data: suppliers = [] } = {}, isLoading: isLoadingSuppliers } =
+    useQuery({
+      queryKey: ["suppliers"],
+      queryFn: getSuppliers,
+    });
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -139,6 +147,28 @@ export default function ProductFormFields({
 
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">
+            Nhà cung cấp *
+          </label>
+          <select
+            name="supplierId"
+            value={formData.categoryId || ""}
+            onChange={handleInputChange}
+            className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          >
+            {suppliers.map((supply) => (
+              <option
+                key={supply.id}
+                value={supply.id}
+              >
+                {supply.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="col-span-2">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             URL hình ảnh chính *
           </label>
           <input
@@ -235,36 +265,6 @@ export default function ProductFormFields({
             className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
             min="0"
             max="100"
-          />
-        </div>
-
-        <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
-            Đánh giá
-          </label>
-          <input
-            type="number"
-            name="rating"
-            value={formData.rating || ""}
-            onChange={handleInputChange}
-            className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-            min="0"
-            max="5"
-            step="0.1"
-          />
-        </div>
-
-        <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
-            Số lượng đánh giá
-          </label>
-          <input
-            type="number"
-            name="reviewCount"
-            value={formData.reviewCount || ""}
-            onChange={handleInputChange}
-            className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-            min="0"
           />
         </div>
       </div>

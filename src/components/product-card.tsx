@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCartStore } from "src/store/cartStore";
 
 import type { Product } from "../types";
+import { useWishlistStore } from "src/store/wishlistStore";
 
 interface ProductCardProps {
   product: Product;
@@ -15,6 +16,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { addItem } = useCartStore();
+  const { addItem: addItemToWishList } = useWishlistStore();
   const { toast } = useToast();
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -32,6 +34,18 @@ export function ProductCard({ product }: ProductCardProps) {
     toast({
       title: "Thêm vào giỏ hàng thành công",
       description: `Đã thêm ${product.name} vào giỏ hàng của bạn.`,
+    });
+  };
+
+  const handleAddToWishList = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    addItemToWishList(product);
+
+    toast({
+      title: "Thêm vào danh sách yêu thích",
+      description: `Đã thêm ${product.name} vào danh sách yêu thích của bạn.`,
     });
   };
 
@@ -73,7 +87,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Quick actions */}
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 text-white transition-transform duration-300 ${isHovered ? "translate-y-0" : "translate-y-full"}`}
+          className={`absolute bottom-0 left-0 right-0 translate-y-0 bg-gradient-to-t from-black/70 to-transparent p-3 text-white transition-transform duration-300`}
         >
           <div className="flex justify-center space-x-3">
             <Link
@@ -93,6 +107,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <button
               className="rounded-full bg-white/20 p-1.5 backdrop-blur-sm hover:bg-white/40"
               title="Thêm vào yêu thích"
+              onClick={handleAddToWishList}
             >
               <i className="bx bx-heart text-lg" />
             </button>
