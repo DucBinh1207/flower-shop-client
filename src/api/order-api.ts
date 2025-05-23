@@ -1,5 +1,5 @@
 import { StateOrderQuery } from "src/app/admin/orders/hooks/use-orders";
-import { Order, ResponsePayment } from "../types";
+import { Order, OrderStatus, ResponsePayment } from "../types";
 import PublicHttpClient from "./public-http-client";
 import { DataResponseWithPagination } from "./type";
 
@@ -25,6 +25,24 @@ export async function order(data: Order) {
 export async function getMyOrder() {
   const response = await httpClient.get<DataResponseWithPagination<Order[]>>({
     url: "/user",
+  });
+
+  return response.data.data;
+}
+
+export async function updateOrderStatus({
+  id,
+  status,
+}: {
+  id: string;
+  status: OrderStatus;
+  }) {
+  const data = {
+    status :status
+  }
+  const response = await httpClient.put<DataResponseWithPagination<Order[]>>({
+    url: `/${id}/status`,
+    data,
   });
 
   return response.data.data;

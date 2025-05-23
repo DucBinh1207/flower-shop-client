@@ -12,6 +12,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { StateProductQuery } from "../_hooks/use-products";
+import { StateCategoryQuery } from "src/app/admin/categories/_hooks/use-categories";
+import useConvertSearchStateToRequestParams from "@/hooks/use-convert-search-state-to-request-params";
+import { StateSupplyQuery } from "src/app/admin/supplies/_hooks/use-supplies";
 
 type ProductSidebarProps = {
   state: StateProductQuery;
@@ -22,18 +25,35 @@ export default function ProductSidebar({
   state,
   setState,
 }: ProductSidebarProps) {
+
+  const query = useConvertSearchStateToRequestParams<
+      NonNullable<StateCategoryQuery>
+    >({
+      page: 1,
+      limit: 100,
+      search: "",
+    });
+
   const {
     data: { data: categories = [] } = {},
     isLoading: isLoadingCategories,
   } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getCategories(),
+    queryFn: () => getCategories(query),
   });
+
+  const querySupply = useConvertSearchStateToRequestParams<
+      NonNullable<StateSupplyQuery>
+    >({
+      page: 1,
+      limit: 100,
+      search: "",
+    });
 
   const { data: { data: suppliers = [] } = {}, isLoading: isLoadingSuppliers } =
     useQuery({
       queryKey: ["suppliers"],
-      queryFn: getSuppliers,
+      queryFn: () => getSuppliers(querySupply),
     });
 
   return (
@@ -110,17 +130,17 @@ export default function ProductSidebar({
             ) : (
               <div className="mb-6 rounded-lg bg-white p-4 shadow-sm">
                 <ul className="space-y-2">
-                  {suppliers.map((suplier) => (
-                    <li key={suplier.id}>
+                  {suppliers.map((supplier) => (
+                    <li key={supplier.id}>
                       <button
-                        className={`w-full rounded-md px-3 py-2 text-left ${state.supplierId === suplier.id ? "bg-primary text-white" : "hover:bg-gray-50"}`}
+                        className={`w-full rounded-md px-3 py-2 text-left ${state.supplierId === supplier.id ? "bg-primary text-white" : "hover:bg-gray-50"}`}
                         onClick={() =>
                           setState({
-                            supplierId: suplier.id,
+                            supplierId: supplier.id,
                           })
                         }
                       >
-                        {suplier.name}
+                        {supplier.name}
                       </button>
                     </li>
                   ))}

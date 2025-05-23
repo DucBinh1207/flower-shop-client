@@ -23,6 +23,7 @@ export default function AdminLayout({
   const menuItems = [
     { label: "Tổng quan", path: "/admin", icon: "bx-home-alt" },
     { label: "Danh mục", path: "/admin/categories", icon: "bx-category" },
+    { label: "Nhà cung cấp", path: "/admin/supplies", icon: "bx-building-house" },
     { label: "Sản phẩm", path: "/admin/products", icon: "bx-package" },
     { label: "Đơn hàng", path: "/admin/orders", icon: "bx-cart" },
   ];

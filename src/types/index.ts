@@ -89,6 +89,7 @@ export interface CartItem {
 
 // Order types
 export interface OrderItem {
+  id?: string;
   orderId: string;
   productId: string;
   productName: string;

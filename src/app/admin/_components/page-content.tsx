@@ -232,7 +232,7 @@ export default function PageContent() {
                   Tỷ lệ hoàn thành đơn
                 </span>
                 <span className="text-sm font-medium">
-                  {dashboardStatistics?.orderCompletionRate}%
+                 {((dashboardStatistics?.orderCompletionRate ?? 0) * 100).toFixed(1)}%
                 </span>
               </div>
             </div>

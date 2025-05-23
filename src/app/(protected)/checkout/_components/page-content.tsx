@@ -184,6 +184,7 @@ export default function PageContent() {
     const fullAddress = `${data.address}, ${wardName}, ${districtName}, ${cityName}`;
 
     const orderDetails: Order = {
+      id:"",
       items: itemFormatted,
       subtotal,
       shippingFee,

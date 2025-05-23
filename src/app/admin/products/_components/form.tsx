@@ -3,6 +3,8 @@ import { Category, Product } from "@/types/index";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useAllCategory } from "../_hooks/use-categories";
+import { StateSupplyQuery } from "../../supplies/_hooks/use-supplies";
+import useConvertSearchStateToRequestParams from "@/hooks/use-convert-search-state-to-request-params";
 
 interface ProductFormFieldsProps {
   formData: Partial<Product>;
@@ -17,11 +19,20 @@ export default function ProductFormFields({
   categories,
   currentProduct,
 }: ProductFormFieldsProps) {
+  const querySupply = useConvertSearchStateToRequestParams<
+    NonNullable<StateSupplyQuery>
+  >({
+    page: 1,
+    limit: 100,
+    search: "",
+  });
+
   const { data: { data: suppliers = [] } = {}, isLoading: isLoadingSuppliers } =
     useQuery({
       queryKey: ["suppliers"],
-      queryFn: getSuppliers,
+      queryFn: () => getSuppliers(querySupply),
     });
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -151,7 +162,7 @@ export default function ProductFormFields({
           </label>
           <select
             name="supplierId"
-            value={formData.categoryId || ""}
+            value={formData.supplierId || ""}
             onChange={handleInputChange}
             className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
             required

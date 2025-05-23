@@ -3,16 +3,15 @@
 import { useQuery } from "@tanstack/react-query";
 import useQueryStates from "@/hooks/use-query-states";
 import useConvertSearchStateToRequestParams from "@/hooks/use-convert-search-state-to-request-params";
-import { getOrders } from "@/api/order-api";
+import { getSuppliers } from "@/api/supply-api";
 
-export type StateOrderQuery = {
+export type StateSupplyQuery = {
   page: number;
   limit: number;
-  status: string;
-  customerPhone: string;
+  search: string;
 };
 
-export const useOrders = () => {
+export const useSupplyFiltering = () => {
   const { state, setState } = useQueryStates({
     structure: {
       page: {
@@ -25,32 +24,25 @@ export const useOrders = () => {
         defaultValue: 10,
         queryName: "l",
       },
-      status: {
+      search: {
         type: "string",
         defaultValue: "",
-        queryName: "status",
+        queryName: "k",
       },
-      phone: {
-        type: "string",
-        defaultValue: "",
-        queryName: "customerPhone",
-      },
-      
     },
   });
 
   const query = useConvertSearchStateToRequestParams<
-    NonNullable<StateOrderQuery>
+    NonNullable<StateSupplyQuery>
   >({
     page: state.page,
     limit: state.limit,
-    customerPhone: state.phone,
-    status: state.status,
+    search: state.search,
   });
 
   const { data: { data = [], totalPages = 0 } = {}, isLoading } = useQuery({
-    queryKey: ["allOrder", state],
-    queryFn: () => getOrders(query),
+    queryKey: ["supplies", state],
+    queryFn: () => getSuppliers(query),
   });
 
   return {

@@ -13,6 +13,7 @@ export const products: Product[] = [
     originalPrice: 100000,
     discount: 25,
     categoryId: "1",
+    supplierId: "1",
     image:
       "https://images.unsplash.com/photo-1548957459-d31dad5a285a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     images: [
@@ -43,6 +44,7 @@ export const products: Product[] = [
     originalPrice: null,
     discount: null,
     categoryId: "2",
+    supplierId: "1",
     image:
       "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     images: [
@@ -73,6 +75,7 @@ export const products: Product[] = [
     originalPrice: null,
     discount: null,
     categoryId: "3",
+    supplierId: "1",
     image:
       "https://images.unsplash.com/photo-1617791160505-6f00504e3519?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     images: [
@@ -103,6 +106,7 @@ export const products: Product[] = [
     originalPrice: 70000,
     discount: 15,
     categoryId: "4",
+    supplierId: "1",
     image:
       "https://images.unsplash.com/photo-1598187079701-06343c10209a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     images: [
@@ -133,6 +137,7 @@ export const products: Product[] = [
     originalPrice: null,
     discount: null,
     categoryId: "5",
+    supplierId: "1",
     image:
       "https://images.unsplash.com/photo-1553530979-212c46e0265d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     images: [
@@ -163,6 +168,7 @@ export const products: Product[] = [
     originalPrice: null,
     discount: null,
     categoryId: "6",
+    supplierId: "1",
     image:
       "https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     images: [
@@ -193,6 +199,7 @@ export const products: Product[] = [
     originalPrice: null,
     discount: null,
     categoryId: "7",
+    supplierId: "1",
     image:
       "https://images.unsplash.com/photo-1440713017205-02904f447e26?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     images: [
@@ -223,6 +230,7 @@ export const products: Product[] = [
     originalPrice: 80000,
     discount: 20,
     categoryId: "8",
+    supplierId: "1",
     image:
       "https://images.unsplash.com/photo-1589994160839-163cd867cfe8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     images: [

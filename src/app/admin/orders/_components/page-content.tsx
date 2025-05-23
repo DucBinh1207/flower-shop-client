@@ -5,12 +5,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useOrders } from "../hooks/use-orders";
 import PaginationList from "@/components/ui/pagination-list";
 import { Order } from "@/types/index";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateOrderStatus } from "@/api/order-api";
+import useDebounceCallback from "@/hooks/use-debounce-callback";
 
 export default function PageContent() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [openStatusDropdown, setOpenStatusDropdown] = useState<string | null>(
     null,
   );
@@ -20,7 +23,18 @@ export default function PageContent() {
 
   const { data, state, isLoading, totalPages, setState } = useOrders();
 
+  const queryClient = useQueryClient();
 
+  const { mutate } = useMutation({
+    mutationFn: updateOrderStatus,
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["allOrder"] });
+      toast({
+        title: "Cập nhật thành công",
+        description: `Đã cập nhật trạng thái đơn hàng `,
+      });
+    },
+  });
 
   const handleViewOrder = (order: Order) => {
     setSelectedOrder(order);
@@ -36,19 +50,7 @@ export default function PageContent() {
     orderId: string,
     newStatus: "pending" | "processing" | "shipped" | "delivered" | "cancelled",
   ) => {
-    // Update order status
-    // const updatedOrders = orderList.map((order) =>
-    //   order.id === orderId ? { ...order, status: newStatus } : order,
-    // );
-    // setOrderList(updatedOrders);
-    // If the order is currently selected in the modal, update that too
-    // if (selectedOrder && selectedOrder.id === orderId) {
-    //   setSelectedOrder({ ...selectedOrder, status: newStatus });
-    // }
-    // toast({
-    //   title: "Cập nhật thành công",
-    //   description: `Đã cập nhật trạng thái đơn hàng #${orderId} thành ${getStatusText(newStatus)}`,
-    // });
+    mutate({ id: orderId, status: newStatus });
   };
 
   const getStatusText = (status: string) => {
@@ -100,6 +102,10 @@ export default function PageContent() {
       });
     setStatusFilter(value);
   };
+  const [handleDebounceSearch] = useDebounceCallback(
+    () => setState({phone:searchValue}),
+    300,
+  );
 
   return (
     <div>
@@ -114,10 +120,13 @@ export default function PageContent() {
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder="Tìm theo tên, email, SĐT hoặc mã đơn hàng..."
+              placeholder="Tìm theo số điện thoại..."
               className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchValue}
+              onChange={(e) => {
+                handleDebounceSearch();
+                setSearchValue(e.target.value);
+              }}
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-500">
               <i className="bx bx-search text-xl"></i>
@@ -187,8 +196,8 @@ export default function PageContent() {
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                     {new Date(order.createdAt ?? "").toLocaleDateString(
-                            "vi-VN",
-                          )}
+                      "vi-VN",
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                     {order.total.toLocaleString()}₫
@@ -361,9 +370,9 @@ export default function PageContent() {
                   <div className="rounded-lg bg-gray-50 p-4">
                     <p className="text-sm">
                       <span className="font-medium">Ngày đặt:</span>{" "}
-                      {new Date(selectedOrder.createdAt ?? "").toLocaleDateString(
-                        "vi-VN",
-                      )}
+                      {new Date(
+                        selectedOrder.createdAt ?? "",
+                      ).toLocaleDateString("vi-VN")}
                     </p>
                     <p className="text-sm">
                       <span className="font-medium">Trạng thái:</span>
@@ -421,7 +430,7 @@ export default function PageContent() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {/* {selectedOrder.items.map((item) => (
+                    {selectedOrder.items.map((item) => (
                       <tr key={item.id}>
                         <td className="whitespace-nowrap px-6 py-4">
                           <div className="flex items-center">
@@ -447,7 +456,7 @@ export default function PageContent() {
                           {item.subtotal.toLocaleString()}₫
                         </td>
                       </tr>
-                    ))} */}
+                    ))}
                   </tbody>
                 </table>
               </div>

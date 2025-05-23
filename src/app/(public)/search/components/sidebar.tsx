@@ -11,7 +11,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { StateProductQuery } from "../_hooks/use-products";
+import { StateProductQuery } from "../../products/_hooks/use-products";
+import { StateCategoryQuery } from "src/app/admin/categories/_hooks/use-categories";
+import useConvertSearchStateToRequestParams from "@/hooks/use-convert-search-state-to-request-params";
+import { StateSupplyQuery } from "src/app/admin/supplies/_hooks/use-supplies";
 
 type ProductSidebarProps = {
   state: StateProductQuery;
@@ -22,18 +25,34 @@ export default function ProductSidebar({
   state,
   setState,
 }: ProductSidebarProps) {
+  const query = useConvertSearchStateToRequestParams<
+    NonNullable<StateCategoryQuery>
+  >({
+    page: 1,
+    limit: 100,
+    search: "",
+  });
+
   const {
     data: { data: categories = [] } = {},
     isLoading: isLoadingCategories,
   } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getCategories(),
+    queryFn: () => getCategories(query),
+  });
+
+  const querySupply = useConvertSearchStateToRequestParams<
+    NonNullable<StateSupplyQuery>
+  >({
+    page: 1,
+    limit: 100,
+    search: "",
   });
 
   const { data: { data: suppliers = [] } = {}, isLoading: isLoadingSuppliers } =
     useQuery({
       queryKey: ["suppliers"],
-      queryFn: getSuppliers,
+      queryFn: () => getSuppliers(querySupply),
     });
 
   return (

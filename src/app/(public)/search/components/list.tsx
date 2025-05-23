@@ -4,7 +4,7 @@ import { PageLoading } from "@/components/page-loading";
 import PaginationList from "@/components/ui/pagination-list";
 
 import { Product } from "@/types/index";
-import { StateProductQuery } from "../_hooks/use-products";
+import { StateProductQuery } from "../../products/_hooks/use-products";
 
 type ProductsGridProps = {
   totalPages: number;
