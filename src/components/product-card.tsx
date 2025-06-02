@@ -116,17 +116,6 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="p-4">
-        {/* Rating */}
-        <div className="mb-1 flex items-center text-sm text-yellow-500">
-          {[...Array(5)].map((_, i) => (
-            <i
-              key={i}
-              className={`bx ${i < Math.floor(product.rating) ? "bxs-star" : i < product.rating ? "bxs-star-half" : "bx-star"}`}
-            />
-          ))}
-          <span className="ml-1 text-gray-500">({product.reviewCount})</span>
-        </div>
-
         {/* Product Name */}
         <h3 className="font-medium text-gray-800 transition-colors duration-300 hover:text-primary">
           <Link href={`/products/${product.slug}`}>{product.name}</Link>

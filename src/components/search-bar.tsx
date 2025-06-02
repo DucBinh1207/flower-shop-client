@@ -122,15 +122,7 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
                 <i className="bx bx-x text-lg" />
               </button>
             )}
-            {/* <button
-              type="button"
-              onClick={handleSearchByImage}
-              className="rounded-full p-1 text-gray-600 transition-colors hover:bg-gray-100 hover:text-primary"
-              title="Tìm kiếm bằng hình ảnh"
-              aria-label="Tìm kiếm bằng hình ảnh"
-            >
-              <i className="bx bx-camera text-lg" />
-            </button> */}
+           
             <ImageSearchButton/>
           </div>
 
@@ -231,32 +223,7 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
             </div>
           ) : (
             <div>
-              <div className="border-b border-gray-50 px-4 py-2">
-                <h3 className="text-sm font-medium text-gray-700">
-                  Tìm kiếm phổ biến
-                </h3>
-              </div>
-              <ul className="space-y-1 p-2">
-                {popularSearchTerms.map((term) => (
-                  <li key={term}>
-                    <button
-                      onClick={() => handleQuickSearch(term)}
-                      className="flex w-full items-center rounded-md px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50/80"
-                    >
-                      <i className="bx bx-trending-up mr-2 text-gray-400" />
-                      {term}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <div className="border-t border-gray-50 p-2 pt-0">
-                <button
-                  onClick={() => router.push("/categories")}
-                  className="w-full rounded-md px-3 py-2 text-center text-sm font-medium text-primary transition-colors hover:bg-gray-50/80"
-                >
-                  Xem tất cả danh mục
-                </button>
-              </div>
+             
             </div>
           )}
         </div>

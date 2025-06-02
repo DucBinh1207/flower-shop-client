@@ -17,15 +17,9 @@ export default async function ProductDetail({ params }: ProductDetailProps) {
     {},
   );
 
-  console.log(1)
-  console.log({data})
-
   if (!data) {
     notFound();
   }
-  
-  console.log(2)
-  console.log({data});
 
   return <PageContent product={data} />;
 }

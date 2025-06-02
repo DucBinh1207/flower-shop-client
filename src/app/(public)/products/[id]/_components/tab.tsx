@@ -30,12 +30,6 @@ export default function ProductTabs({ product, comments }: ProductTabsProps) {
           >
             Hướng dẫn trồng
           </button>
-          <button
-            className={`whitespace-nowrap px-4 py-3 text-sm font-medium ${activeTab === "reviews" ? "border-b-2 border-primary text-primary" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setActiveTab("reviews")}
-          >
-            Đánh giá ({comments.length})
-          </button>
         </div>
       </div>
 

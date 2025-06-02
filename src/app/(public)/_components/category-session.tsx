@@ -1,20 +1,28 @@
 import { getCategories } from "@/api/categories-api";
 import { CategoryCard } from "@/components/category-card";
 import { PageLoading } from "@/components/page-loading";
+import useConvertSearchStateToRequestParams from "@/hooks/use-convert-search-state-to-request-params";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { StateCategoryQuery } from "src/app/admin/categories/_hooks/use-categories";
 
 export default function CategorySession() {
+  const query = useConvertSearchStateToRequestParams<
+      NonNullable<StateCategoryQuery>
+    >({
+      page: 1,
+      limit: 6,
+      search: "",
+    });
+
   const {
     data: { data: categories = [] } = {},
     isLoading: isLoadingCategories,
   } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () =>
-      getCategories({
-        limit: 6,
-      }),
+    queryKey: ["top-category"],
+    queryFn: () => getCategories(query),
   });
+
 
   return (
     <section className="container mx-auto px-4 py-10">

@@ -57,7 +57,7 @@ export const blogPosts: BlogPost[] = [
     image:
       "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     authorId: 1,
-    authorName: "Admin",
+    authorName: "ducbinh",
     createdAt: "2023-08-15",
     tags: ["hoa hồng", "hướng dẫn trồng", "hạt giống"],
   },
@@ -120,9 +120,9 @@ export const blogPosts: BlogPost[] = [
       
       <p>Với những bí quyết trên, bạn hoàn toàn có thể sở hữu những bông hướng dương khổng lồ, rực rỡ trong vườn nhà. Hãy kiên nhẫn và tận hưởng quá trình chăm sóc chúng!</p>`,
     image:
-      "https://images.unsplash.com/photo-1543459176-4426b35c5c7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1517241080758-95a42c519c1a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     authorId: 1,
-    authorName: "Admin",
+    authorName: "ducbinh",
     createdAt: "2023-09-02",
     tags: ["hoa hướng dương", "kỹ thuật trồng", "làm vườn"],
   },
@@ -224,9 +224,9 @@ export const blogPosts: BlogPost[] = [
       
       <p>Việc chăm sóc và nhân giống hoa lan trong điều kiện nhà ở thành phố không quá khó khăn nếu bạn nắm vững kiến thức cơ bản và kiên nhẫn. Hãy bắt đầu với những loài lan dễ trồng và dần dần mở rộng bộ sưu tập của mình. Niềm vui khi thấy những cây lan phát triển và nở hoa sẽ là phần thưởng xứng đáng cho công sức bạn bỏ ra.</p>`,
     image:
-      "https://images.unsplash.com/photo-1511737943890-64e093a37cda?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1586799958784-8687bc5d659f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     authorId: 1,
-    authorName: "Admin",
+    authorName: "ducbinh",
     createdAt: "2023-09-18",
     tags: ["hoa lan", "nhân giống", "kỹ thuật trồng", "cây cảnh trong nhà"],
   },

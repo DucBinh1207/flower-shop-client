@@ -246,7 +246,7 @@ export function Footer() {
                       <i className="bx bx-map text-primary" />
                     </div>
                     <span>
-                      Số 123 Đường ABC, Quận XYZ, Thành phố Hồ Chí Minh
+                      Số 28 Nguyễn Phi Khanh, Thạc Gián, Thanh Khê, Đà Nẵng
                     </span>
                   </li>
                   <li className="flex items-center">

@@ -5,12 +5,22 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyOrder } from "@/api/order-api";
 import { Order } from "@/types/index";
 import { PageLoading } from "@/components/page-loading";
+import { useMyOrders } from "../hooks/use-orders";
+import PaginationList from "@/components/ui/pagination-list";
 
 export default function PageContent() {
-  const { data: { data: orderList = [] } = {}, isLoading } = useQuery({
-    queryKey: ["my-orders"],
-    queryFn: getMyOrder,
-  });
+  // const { data: { data: orderList = [] } = {}, isLoading } = useQuery({
+  //   queryKey: ["my-orders"],
+  //   queryFn: getMyOrder,
+  // });
+
+  const {
+    data: orderList,
+    state,
+    isLoading,
+    totalPages,
+    setState,
+  } = useMyOrders();
 
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -344,6 +354,17 @@ export default function PageContent() {
           </div>
         </div>
       )}
+      <div className="mt-2">
+        <PaginationList
+          totalPage={totalPages}
+          currentPage={state.page}
+          onChangePage={(page) =>
+            setState({
+              page,
+            })
+          }
+        />
+      </div>
     </div>
   );
 }

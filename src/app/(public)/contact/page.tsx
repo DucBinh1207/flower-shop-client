@@ -54,9 +54,9 @@ export default function Contact() {
               Địa Chỉ
             </h3>
             <p className="text-gray-600">
-              Số 123 Đường ABC, Quận XYZ
+              Số 28 Nguyễn Phi Khanh, Thạc Gián, Thanh Khê
               <br />
-              Thành phố Hồ Chí Minh, Việt Nam
+              Thành phố Đà Nẵng, Việt Nam
             </p>
           </div>
 
@@ -316,7 +316,7 @@ export default function Contact() {
 
         <div className="mt-12 overflow-hidden rounded-lg shadow-sm">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4241674197356!2d106.68802921532072!3d10.778789392319668!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f24fe0ddac5%3A0x928b04efb51b623d!2zMTIzIMSQLiBOZ3V54buFbiBUaMOhaSBIb2MsIELhur9uIFRow6BuaCwgUXXhuq1uIDEsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmlldG5hbQ!5e0!3m2!1sen!2s!4v1662536781044!5m2!1sen!2s"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3834.178735185466!2d108.20347587570554!3d16.05621218462147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314219b0e57f9555%3A0xb561fa04d2657f9d!2zMjggTmd1eeG7hW4gUGhpIEtoYW5oLCBUaOG6oWMgR2nDoW4sIFRoYW5oIEtow6osIMSQw6AgTuG6tW5nIDU1MDAwMCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1748456072496!5m2!1svi!2s"
             width="100%"
             height="450"
             style={{ border: 0 }}

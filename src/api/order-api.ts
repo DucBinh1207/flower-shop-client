@@ -2,6 +2,7 @@ import { StateOrderQuery } from "src/app/admin/orders/hooks/use-orders";
 import { Order, OrderStatus, ResponsePayment } from "../types";
 import PublicHttpClient from "./public-http-client";
 import { DataResponseWithPagination } from "./type";
+import { StateMyOrderQuery } from "@/app/(protected)/orders/hooks/use-orders";
 
 const httpClient = new PublicHttpClient("orders");
 
@@ -22,9 +23,9 @@ export async function order(data: Order) {
   return response.data;
 }
 
-export async function getMyOrder() {
+export async function getMyOrder(params: Partial<StateMyOrderQuery>) {
   const response = await httpClient.get<DataResponseWithPagination<Order[]>>({
-    url: "/user",
+    url: "/user",params
   });
 
   return response.data.data;

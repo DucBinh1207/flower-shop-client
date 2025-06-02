@@ -50,19 +50,6 @@ export default function ProductSummary({ product }: ProductSummaryProps) {
         {product.name}
       </h1>
 
-      {/* Ratings */}
-      <div className="mb-4 flex items-center text-sm">
-        <div className="mr-2 flex text-yellow-400">
-          {[...Array(5)].map((_, i) => (
-            <i
-              key={i}
-              className={`bx ${i < Math.floor(product.rating) ? "bxs-star" : i < product.rating ? "bxs-star-half" : "bx-star"}`}
-            ></i>
-          ))}
-        </div>
-        <span className="text-gray-500">({product.reviewCount} đánh giá)</span>
-      </div>
-
       {/* Price */}
       <div className="mb-6">
         <div className="flex items-baseline">

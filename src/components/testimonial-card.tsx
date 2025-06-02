@@ -23,14 +23,6 @@ export function TestimonialCard({ testimonial }: TestimonialCardProps) {
           />
           <div>
             <h4 className="font-semibold">{testimonial.name}</h4>
-            <div className="mt-1 flex items-center text-sm text-yellow-500">
-              {[...Array(5)].map((_, i) => (
-                <i
-                  key={i}
-                  className={`bx ${i < Math.floor(testimonial.rating) ? "bxs-star" : i < testimonial.rating ? "bxs-star-half" : "bx-star"}`}
-                ></i>
-              ))}
-            </div>
           </div>
         </div>
       </div>

@@ -85,35 +85,15 @@ export default function Page() {
             Đội ngũ của chúng tôi
           </h2>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className=" gap-6 justify-center flex">
             <div className="text-center">
               <img
-                src="https://i.pravatar.cc/150?img=32"
+                src={`https://ui-avatars.com/api/?name=${encodeURIComponent("Trần Đức Bình")}&background=random`}
                 alt="Nguyễn Thị Mai"
                 className="mx-auto mb-3 h-32 w-32 rounded-full object-cover"
               />
-              <h3 className="font-semibold text-gray-800">Nguyễn Thị Mai</h3>
-              <p className="text-primary">Nhà sáng lập & CEO</p>
-            </div>
-
-            <div className="text-center">
-              <img
-                src="https://i.pravatar.cc/150?img=59"
-                alt="Trần Văn Minh"
-                className="mx-auto mb-3 h-32 w-32 rounded-full object-cover"
-              />
-              <h3 className="font-semibold text-gray-800">Trần Văn Minh</h3>
-              <p className="text-primary">Trưởng phòng sản phẩm</p>
-            </div>
-
-            <div className="text-center">
-              <img
-                src="https://i.pravatar.cc/150?img=47"
-                alt="Lê Thị Hương"
-                className="mx-auto mb-3 h-32 w-32 rounded-full object-cover"
-              />
-              <h3 className="font-semibold text-gray-800">Lê Thị Hương</h3>
-              <p className="text-primary">Chuyên gia về cây trồng</p>
+              <h3 className="font-semibold text-gray-800">Trần Đức Bình</h3>
+              <p className="text-primary">Nhà sáng lập</p>
             </div>
           </div>
         </div>

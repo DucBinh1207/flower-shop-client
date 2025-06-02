@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 
-import { categories } from "@/constants/categories";
 import { useCartStore } from "src/store/cartStore";
 
 import { Logo } from "./logo";
@@ -17,6 +16,10 @@ import { deleteAuthTokenFromInternalServer } from "@/api/internal-auth-token-api
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useWishlistStore } from "src/store/wishlistStore";
+import useConvertSearchStateToRequestParams from "@/hooks/use-convert-search-state-to-request-params";
+import { StateCategoryQuery } from "src/app/admin/categories/_hooks/use-categories";
+import { getCategories } from "@/api/categories-api";
+import { useQuery } from "@tanstack/react-query";
 
 export function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -27,6 +30,22 @@ export function Navbar() {
 
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLLIElement>(null);
+
+  const query = useConvertSearchStateToRequestParams<
+      NonNullable<StateCategoryQuery>
+    >({
+      page: 1,
+      limit: 5,
+      search: "",
+    });
+
+  const {
+    data: { data: categories = [] } = {},
+    isLoading: isLoadingCategories,
+  } = useQuery({
+    queryKey: ["categories-navbar"],
+    queryFn: () => getCategories(query),
+  });
 
   const { items : WishListItem } = useWishlistStore();
   const { items } = useCartStore();
@@ -291,7 +310,7 @@ export function Navbar() {
                     {categories.map((category) => (
                       <Link
                         key={category.id}
-                        href={`/category/${category.slug}` as Route}
+                        href={`/products?categoryId=${category.id}` as Route}
                         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50/80 hover:text-primary"
                         onClick={() => setIsCategoryDropdownOpen(false)}
                       >

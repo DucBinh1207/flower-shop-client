@@ -64,6 +64,7 @@ export interface User {
   avatar: string;
   role: "admin" | "customer";
   createdAt: string;
+  status: "active" | "inactive";
 }
 
 // Comment types

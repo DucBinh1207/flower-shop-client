@@ -167,14 +167,16 @@ export default function ProductFormFields({
             className="w-full rounded-md border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
             required
           >
-            {suppliers.map((supply) => (
-              <option
-                key={supply.id}
-                value={supply.id}
-              >
-                {supply.name}
-              </option>
-            ))}
+            {suppliers
+              .filter((supply) => supply.status === "active")
+              .map((supply) => (
+                <option
+                  key={supply.id}
+                  value={supply.id}
+                >
+                  {supply.name}
+                </option>
+              ))}
           </select>
         </div>
 

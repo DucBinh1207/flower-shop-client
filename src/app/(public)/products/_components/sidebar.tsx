@@ -70,6 +70,11 @@ export default function ProductSidebar({
             });
           }}
         />
+        {state.maxPrice && state.minPrice ?
+         <div className="mt-2">
+          <span> {state.minPrice}₫{" - "}{state.maxPrice}₫</span>
+       </div> : <></>}
+       
       </div>
       <Accordion
         type="multiple"
@@ -130,7 +135,8 @@ export default function ProductSidebar({
             ) : (
               <div className="mb-6 rounded-lg bg-white p-4 shadow-sm">
                 <ul className="space-y-2">
-                  {suppliers.map((supplier) => (
+                    {suppliers.map((supplier) => (
+                    
                     <li key={supplier.id}>
                       <button
                         className={`w-full rounded-md px-3 py-2 text-left ${state.supplierId === supplier.id ? "bg-primary text-white" : "hover:bg-gray-50"}`}
