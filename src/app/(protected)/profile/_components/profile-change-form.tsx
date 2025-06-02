@@ -63,8 +63,8 @@ export default function ProfileInfoForm({
     values: {
       name: user?.name || "",
       email: user?.email || "",
-      phone: "",
-      address: "",
+      phone: user?.phone || "",
+      address: user?.address ||"",
       avatar: user?.avatar || "",
     },
   });
@@ -245,7 +245,7 @@ export default function ProfileInfoForm({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <p className="text-sm text-gray-500">Họ tên</p>
-            <p className="font-medium">{user?.name}</p>
+            <p className="font-medium">{user?.name }</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Email</p>
@@ -253,11 +253,11 @@ export default function ProfileInfoForm({
           </div>
           <div>
             <p className="text-sm text-gray-500">Số điện thoại</p>
-            <p className="font-medium">Chưa cập nhật</p>
+            <p className="font-medium">{user?.phone}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Địa chỉ</p>
-            <p className="font-medium">Chưa cập nhật</p>
+            <p className="font-medium">{user?.address}</p>
           </div>
         </div>
       </div>
