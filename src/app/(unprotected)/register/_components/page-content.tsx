@@ -71,12 +71,12 @@ export default function PageContent() {
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "Dungnq",
-      email: "admin@seedbloom.vn",
-      phone: "0971934862",
-      address: "Da nang",
-      password: "admin123",
-      confirmPassword: "admin123",
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      password: "",
+      confirmPassword: "",
       acceptTerms: true,
     },
   });
@@ -122,7 +122,7 @@ export default function PageContent() {
                   <input
                     type="text"
                     className={`w-full border p-3 ${errors.name ? "border-red-500" : "border-gray-300"} rounded-lg focus:border-primary focus:outline-none`}
-                    placeholder="Nguyễn Văn A"
+                    placeholder="Nhập tên"
                     {...register("name")}
                   />
                   {errors.name && (
@@ -154,7 +154,7 @@ export default function PageContent() {
                   <input
                     type="text"
                     className={`w-full border p-3 ${errors.phone ? "border-red-500" : "border-gray-300"} rounded-lg focus:border-primary focus:outline-none`}
-                    placeholder="0912345678"
+                    placeholder="Nhập số điện thoại"
                     {...register("phone")}
                   />
                   {errors.phone && (
@@ -169,7 +169,7 @@ export default function PageContent() {
                   <input
                     type="text"
                     className={`w-full border p-3 ${errors.address ? "border-red-500" : "border-gray-300"} rounded-lg focus:border-primary focus:outline-none`}
-                    placeholder="123 Đường ABC, Phường XYZ, Quận/Huyện, Thành phố"
+                    placeholder="Nhập địa chỉ"
                     {...register("address")}
                   />
                   {errors.address && (
@@ -290,40 +290,6 @@ export default function PageContent() {
                   Đăng nhập
                 </Link>
               </p>
-            </div>
-
-            <div className="mt-8">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-white px-2 text-gray-500">
-                    Hoặc đăng ký bằng
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-3 gap-3">
-                <a
-                  href="#"
-                  className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  <i className="bx bxl-facebook text-xl text-blue-600"></i>
-                </a>
-                <a
-                  href="#"
-                  className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  <i className="bx bxl-google text-xl text-red-500"></i>
-                </a>
-                <a
-                  href="#"
-                  className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  <i className="bx bxl-apple text-xl text-black"></i>
-                </a>
-              </div>
             </div>
           </div>
         </div>

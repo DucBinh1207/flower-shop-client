@@ -253,11 +253,11 @@ export default function ProfileInfoForm({
           </div>
           <div>
             <p className="text-sm text-gray-500">Số điện thoại</p>
-            <p className="font-medium">{user?.phone}</p>
+            <p className="font-medium">{user?.phone || "Chưa cập nhật"}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Địa chỉ</p>
-            <p className="font-medium">{user?.address}</p>
+            <p className="font-medium">{user?.address || "Chưa cập nhật"}</p>
           </div>
         </div>
       </div>

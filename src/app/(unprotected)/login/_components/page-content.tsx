@@ -210,53 +210,6 @@ export default function PageContent() {
                 </Link>
               </p>
             </div>
-
-            <div className="mt-8">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-white px-2 text-gray-500">
-                    Hoặc đăng nhập bằng
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-3 gap-3">
-                <a
-                  href="#"
-                  className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  <i className="bx bxl-facebook text-xl text-blue-600" />
-                </a>
-                <a
-                  href="#"
-                  className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  <i className="bx bxl-google text-xl text-red-500" />
-                </a>
-                <a
-                  href="#"
-                  className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  <i className="bx bxl-apple text-xl text-black" />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Demo accounts */}
-          <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <h3 className="mb-2 font-semibold text-blue-800">
-              Tài khoản demo:
-            </h3>
-            <p className="mb-1 text-sm text-blue-700">
-              Admin: admin@seedbloom.vn / admin123
-            </p>
-            <p className="text-sm text-blue-700">
-              Khách hàng: nguyenquocdung@gmail.com / dung123
-            </p>
           </div>
         </div>
       </div>

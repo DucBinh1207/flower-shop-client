@@ -25,7 +25,7 @@ export default function Page() {
       description: "Hạt giống được chọn lọc kỹ càng, đảm bảo tỷ lệ nảy mầm cao",
     },
     {
-      icon: "bx-truck",
+      icon: "bxs-truck",
       title: "Vận chuyển nhanh chóng",
       description: "Giao hàng toàn quốc từ 2-5 ngày, miễn phí cho đơn từ 300K",
     },
