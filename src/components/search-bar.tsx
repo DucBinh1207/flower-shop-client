@@ -32,14 +32,6 @@ export function SearchBar({ isMobile = false }: SearchBarProps) {
     setIsSearchFocused(false);
   });
 
-  // Popular search term suggestions
-  const popularSearchTerms = [
-    "Hoa hồng",
-    "Hoa sen",
-    "Hoa hướng dương",
-    "Hoa cúc",
-    "Hoa lan",
-  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
