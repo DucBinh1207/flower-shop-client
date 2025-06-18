@@ -26,7 +26,7 @@ export default function ImageSearchButton() {
       const formData = new FormData();
       formData.append("file", file); // field name là 'file'
 
-      const res = await fetch("https://flower-recognition-api.onrender.com/api/v1/products/image", {
+      const res = await fetch("https://flower-shop-api-3v1s.onrender.com/api/v1/products/image", {
         method: "POST",
         body: formData,
       });
