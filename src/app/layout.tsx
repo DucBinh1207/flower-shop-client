@@ -10,10 +10,10 @@ import { SessionProvider } from "@/components/contexts/session";
 
 export const metadata: Metadata = {
   title: {
-    template: "HELLO",
-    default: "HELLO",
+    template: "SeedBloom",
+    default: "SeedBloom",
   },
-  description: "HELLO",
+  description: "SeedBloom",
   robots: {
     index: false,
     follow: false,
